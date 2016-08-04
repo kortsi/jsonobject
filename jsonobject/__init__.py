@@ -5,9 +5,9 @@ from .properties import *
 from .api import JsonObject
 
 __all__ = [
-    'IntegerProperty', 'FloatProperty', 'DecimalProperty',
+    'IntegerProperty', 'FloatProperty', 'DecimalProperty', 'DecimalFloatProperty',
     'StringProperty', 'BooleanProperty',
-    'DateProperty', 'DateTimeProperty', 'TimeProperty',
+    'DateProperty', 'DateTimeProperty', 'DateTimeTzProperty', 'TimeProperty',
     'ObjectProperty', 'ListProperty', 'DictProperty',
     'JsonObject', 'JsonArray',
 ]

@@ -514,6 +514,24 @@ class PropertyTestCase(unittest2.TestCase):
         with self.assertRaises(BadValueError):
             p.wrap('1988-07-07')
 
+    def test_datetimetz(self):
+        import datetime
+
+        class SummerInHelsinki(datetime.tzinfo):
+            def utcoffset(self,dt):
+                return datetime.timedelta(minutes=3*60)
+
+        p = DateTimeTzProperty()
+        for string, dt in [(
+            '2016-08-04T12:45:11+03:00',
+            datetime.datetime(2016,8,4,12,45,11,tzinfo=SummerInHelsinki()))]:
+            self.assertEqual(p.wrap(string), dt)
+            self.assertEqual(p.unwrap(dt), (dt, string))
+        with self.assertRaises(BadValueError):
+            p.wrap('1234-05-90T00:00:00Z')
+        with self.assertRaises(BadValueError):
+            p.wrap('00-07-07')
+
     def test_time(self):
         import datetime
         p = TimeProperty()
@@ -548,6 +566,19 @@ class PropertyTestCase(unittest2.TestCase):
         foo.decimal = 5.25
         self.assertEqual(foo.decimal, decimal.Decimal(unicode(5.25)))
         self.assertEqual(foo.to_json()['decimal'], '5.25')
+
+    def test_decimal_float(self):
+        import decimal
+
+        class Foo(JsonObject):
+            f = DecimalFloatProperty()
+
+        foo = Foo(f=decimal.Decimal('2.0'))
+        self.assertEqual(foo.f, 2.0)
+        self.assertIsInstance(foo.f, float)
+
+        foo = Foo(f=2)
+        self.assertEqual(foo.f, 2.0)
 
     def test_dict(self):
         mapping = {'one': 1, 'two': 2}

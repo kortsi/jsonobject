@@ -1,6 +1,16 @@
-# jsonobject
+This fork adds two additional properties to the original library:
 
-[![Build Status](https://travis-ci.org/dimagi/jsonobject.png)](https://travis-ci.org/dimagi/jsonobject)
+1. DateTimeTzProperty: a timezone-aware datetime property
+2. DecimalFloatProperty: a float property which accepts Decimals as input
+
+dateutil.parser.parse is used to parse DateTimeTzProperties. It is not very
+strict about input formats.
+
+Original README follows:
+
+----
+
+# jsonobject
 
 A python library for handling deeply nested JSON objects
 as well-schema'd python objects.

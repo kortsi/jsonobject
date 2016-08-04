@@ -13,7 +13,7 @@ setup(
     long_description=long_description,
     url='https://github.com/dannyroberts/jsonobject',
     packages=['jsonobject'],
-    install_requires=['six'],
+    install_requires=['six','python-dateutil'],
     tests_require=['unittest2'],
     test_suite='test',
 )

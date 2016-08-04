@@ -13,6 +13,7 @@ from .base_properties import (
     DefaultProperty,
 )
 from .containers import JsonArray, JsonDict, JsonSet
+import dateutil.parser
 
 
 if sys.version > '3':
@@ -61,6 +62,16 @@ class DecimalProperty(JsonProperty):
         return obj, unicode(obj)
 
 
+class DecimalFloatProperty(AssertTypeProperty):
+    """A float which accepts decimal.Decimal as input type"""
+    _type = float
+
+    def selective_coerce(self, obj):
+        if isinstance(obj, (int,long,decimal.Decimal)):
+            obj = float(obj)
+        return obj
+
+
 class DateProperty(AbstractDateProperty):
 
     _type = datetime.date
@@ -100,6 +111,25 @@ class DateTimeProperty(AbstractDateProperty):
         else:
             padding = '' if value.microsecond else '.000000'
         return value, value.isoformat() + padding + 'Z'
+
+
+class DateTimeTzProperty(AbstractDateProperty):
+    """Timezone-aware datetime.
+    Uses dateutil.parser.parse to parse timestamps. Always exact."""
+
+    _type = datetime.datetime
+
+    def _wrap(self, value):
+        try:
+            dt = dateutil.parser.parse(value)
+            return dt
+        except ValueError as e:
+            raise ValueError(
+                'Invalid ISO date/time {0!r} [{1}]'.format(value, e))
+
+    def _unwrap(self, value):
+        out = value.isoformat()
+        return value, out
 
 
 class TimeProperty(AbstractDateProperty):
